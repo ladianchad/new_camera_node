@@ -16,10 +16,10 @@ bool operate_1(Srv_in &req,Srv_out &res);
 bool operate_2(Srv_in &req,Srv_out &res);
 Mat eulerAnglesToRotationMatrix(Vec3f &theta);
 void service(int mode);
-ImgTfFinder::CameraInfo cam1[2]{ {931.3824090000001,560.6960309999999,1460.136731,1459.304695}
-    , {937.655922, 558.151482, 1475.831374,1473.475273}};
-ImgTfFinder::CameraInfo cam2[2]{ {1014.006763,526.753957,1467.924445,1465.315384}
-    , {959.665281, 593.683847, 1469.472732,1467.230973}};
+ImgTfFinder::CameraInfo cam1[2]{ {979.695288, 549.913691, 1448.769366,1445.308339}
+    , {963.129163,583.055193,1442.776223,1441.511784}};
+ImgTfFinder::CameraInfo cam2[2]{ {966.616058,617.093752,1459.348839,1457.665754}
+    , {1010.841717, 544.825729, 1461.046378,1461.657982}};
 tf2_ros::Buffer tfBuffer;
 tf2_ros::TransformListener *tfListener;
 CircleFind *finder_1;
@@ -47,7 +47,7 @@ bool operate_1(Srv_in &req,Srv_out &res){
 	vector<TF> holes_tf;
 	map<pair<double,double>,geometry_msgs::Vector3,greater<pair<double,double>>> to_find_holse;
 	string hole_name = req.name;
-	string part_num = hole_name.substr(0,6);
+	string part_num = hole_name.substr(0,13);
 	try{ 
 		hole_tf = tfBuffer.lookupTransform("camera_center_1",hole_name,ros::Time(0));
 		for(int i=1;i < 11;i++){
@@ -158,7 +158,7 @@ bool operate_2(Srv_in &req,Srv_out &res){
 	vector<TF> holes_tf;
 	map<pair<double,double>,geometry_msgs::Vector3,greater<pair<double,double>>> to_find_holse;
 	string hole_name = req.name;
-	string part_num = hole_name.substr(0,6);
+	string part_num = hole_name.substr(0,13);
 	try{ 
 		hole_tf = tfBuffer.lookupTransform("camera_center_2",hole_name,ros::Time(0));
 		for(int i=1;i < 11;i++){

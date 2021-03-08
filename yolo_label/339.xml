@@ -1,0 +1,26 @@
+<annotation>
+	<folder>yolo_data</folder>
+	<filename>339.png</filename>
+	<path>/home/airo/robot_ws/src/camera_node/yolo_data/339.png</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>1920</width>
+		<height>1080</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>hole</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>2</xmin>
+			<ymin>816</ymin>
+			<xmax>38</xmax>
+			<ymax>861</ymax>
+		</bndbox>
+	</object>
+</annotation>

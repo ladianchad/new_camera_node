@@ -30,6 +30,7 @@ public:
 private:
     int img_index;
     ofstream outFile;
+    ifstream readindex;
 	ros::ServiceClient yoloy_client;
 	sensor_msgs::Image Image_1,Image_2;
     assembly_robot_msgs::Hole_poses hole_pixel;

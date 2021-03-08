@@ -10,29 +10,6 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <queue>
 #include <algorithm>
-#ifdef TEST_DEBUG
-void op_handler(const std_msgs::Float32 &msg);
-CircleFind *finder_1;
-
-int main(int argc, char** argv){
-	ros::init(argc, argv, "hole_finder_1");
-	finder_1 = new CircleFind();
-	ros::NodeHandle nh;
-	ros::Subscriber op_sub = nh.subscribe("/camera_op",100,op_handler);
-	ROS_INFO("READY CAMERA");
-	ros::spin();
-	delete finder_1;
-	return 0;
-}
-
-void op_handler(const std_msgs::Float32 &msg){
-	double output[3] {0,0,0};
-	double input[3];
-	finder_1->find_circle_tf(output,input);
-}
-
-#endif
-
 
 
 #ifdef FULL_TEST_DEBUG

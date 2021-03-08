@@ -8,7 +8,6 @@ CircleFind::CircleFind(string topicname[2],ImgTfFinder::CameraInfo cam_info[2]):
   topic_name[0] = topicname[0];
   topic_name[1] = topicname[1];
   File_Path = "/home/airo/robot_ws/src/camera_node/yolo_data/";
-  ifstream readindex;
   readindex.open(File_Path+"index.txt");
 
   ////////// window setting ///////////
@@ -50,11 +49,12 @@ CircleFind::CircleFind(string topicname[2],ImgTfFinder::CameraInfo cam_info[2]):
     img_index = stoi(txt);
     readindex.close();
     cout<<"initial index = "<<img_index<<endl;
-    outFile.open(File_Path+"index.txt");
-  }
+   }
   else{
     img_index = 0;
-    outFile.write(std::to_string(img_index).c_str(),std::to_string(img_index).size());
+    outFile.open(File_Path+"index.txt");
+	outFile.write(std::to_string(img_index).c_str(),sizeof(img_index));
+	outFile.close();
     cout<<"create"<<endl;
   }
   image_sub_1 = it_.subscribe(topic_name[0], 1 , &CircleFind::imageCb_1, this);
@@ -123,14 +123,20 @@ void CircleFind::circle_t(Mat &input,vector<Vec3f> &circles,Size blur_size,int c
 }
 
 bool CircleFind::find_circle_tf(double dst[3],HoleList &src,int hole_num,int find_num,int missing){
-	imwrite(File_Path+"image"+std::to_string(img_index++)+".jpg",opencvImage1);
-	imwrite(File_Path+"image"+std::to_string(img_index++)+".jpg",opencvImage2);
-	outFile.write(std::to_string(img_index).c_str(),std::to_string(img_index).size());
-	cout<<"SAVED IMAGE !!"<<endl<<endl;
 	cout<<"LET'S CALL SERIVECE"<<endl;
 	set<pair<int,int>> left_yolo,right_yolo;
 	cout<<"[LEFT]"<<endl;
 	hole_pixel.request.image = Image_1;
+	readindex.open(File_Path+"index.txt");
+	string txt;
+	getline(readindex,txt);
+    img_index = stoi(txt);
+    readindex.close();
+	outFile.open(File_Path+"index.txt");
+	imwrite(File_Path+to_string(img_index++)+".png",opencvImage1);
+	imwrite(File_Path+to_string(img_index++)+".png",opencvImage2);
+	outFile.write(std::to_string(img_index).c_str(),sizeof(img_index));
+	outFile.close();
 	if(yoloy_client.call(hole_pixel)){
 		for(int i=0;i<hole_pixel.response.hole_pose.size();i++){
 			int temp_x = hole_pixel.response.hole_pose[i].x;
@@ -184,7 +190,7 @@ bool CircleFind::find_circle_tf(double dst[3],HoleList &src,int hole_num,int fin
   	waitKey(1);
 	cout<<"YOLO SERIVECE END!"<<endl;
 
-	if(!left_yolo.size() && !right_yolo.size()){
+	if(!left_yolo.size() || !right_yolo.size()){
 		cout<<"YOLO CAN'T FIND HOLE!!"<<endl;
 		return 0;
 	}
@@ -201,11 +207,6 @@ bool CircleFind::find_circle_tf(double dst[3],HoleList &src,int hole_num,int fin
 	
 	left_case = yolo_case(left_yolo,hole_num);
 	right_case = yolo_case(right_yolo,hole_num);
-	
-	if(!left_yolo.size() && !right_yolo.size()){
-		cout<<"YOLO CAN'T FIND HOLE!!"<<endl;
-		return 0;
-	}
 
 	Score L_score = line_matching(left_case,hole_num);
 	Score R_score = line_matching(right_case,hole_num);
